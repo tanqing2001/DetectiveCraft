@@ -13,7 +13,7 @@ GAME_ID = 'game1'
 if 'game_id' not in st.session_state:
     st.session_state['game_id'] = GAME_ID
 CHAR_NAMES = ['Ava Armitage', 'Soren Sepulveda', 'Kai Zhang']
-CHAR_IMAGES = ['images/saber.png', 'images/violet.png', 'images/frieren.png']
+CHAR_IMAGES = ['images/ava_001_f.png', 'images/soren_001_f.png', 'images/kai_001_f.png']
 BACK_IMAGES = ['images/background1.png', 'images/background2.png', 'images/background3.png']
 
 
@@ -99,20 +99,14 @@ def name_tag(char_name, top_margin, left_margin):
         """, unsafe_allow_html=True)
 
 def place_character(char_name, position):
-    # Define the HTML code to position the image at the bottom left corner with a margin
-    #     bottom_left_image_html = """
-    # <div style="position: fixed; bottom: """ + str(int(bottom_margin)) + """px; left: """ + str(int(left_margin)) + """px;">
-    #     <img src="data:image/png;base64,{}" alt="Image" style="height: 70vh;">
-    # </div>
-    # """
     file_name = CHAR_IMAGES[CHAR_NAMES.index(char_name)]
     
     if position == 'left':
-        margin = 'min(22vw, 39.111vh)'
+        margin = 'min(30vw, 53.333vh)'
     elif position == 'middle':
         margin = 'min(50vw, 88.889vh)'
     elif position == 'right':
-        margin = 'min(78vw, 138.667vh)'
+        margin = 'min(70vw, 124.444vh)'
 
     # Place char image
     char_html = """
@@ -135,6 +129,8 @@ def place_character(char_name, position):
     st.markdown(char_html.format(img_base64), unsafe_allow_html=True)
     st.markdown(css_code, unsafe_allow_html=True)
 
+
+
     # Place Name Tag
     name_tag(char_name, 'min(25vh, 14.0625vw)', margin)
     
@@ -145,7 +141,7 @@ def place_character(char_name, position):
     direction = 'left'
     # Define the HTML code to create a button with transparent background using a local image and glow effect on hover
     button_html = """
-    <div style="position: fixed; top: min(50vh, 28.125vw); left: """ + margin + """; transform: translateX(-50%);">
+    <div style="position: fixed; top: min(70vh, 39.375vw); left: """ + margin + """; transform: translateX(-50%);">
         <div style="position: relative; display: inline-block;">
             <img src="data:image/png;base64,{}" alt="Button Image" class=\"""" + direction + """chat-button-image" id=\"""" + direction + """chat-custom-button">
         </div>
@@ -175,7 +171,7 @@ def place_character(char_name, position):
         button[kind="primary"]{
         background-color: rgb(204, 49, 49, 0);
         position: fixed;
-        top: min(50vh, 28.125vw);
+        top: min(70vh, 39.375vw);
         left: """ + margin + """;
         transform: translateX(-50%);
         height: min(10vh, 5.625vw);
@@ -220,10 +216,11 @@ def place_character(char_name, position):
             box-shadow: rgba(255, 255, 255, 0) 0px 0px 10px 0.2rem;
           }""",
     ):
-        b = st.button(" ", key=button_key, type = 'primary', on_click = open_chat_portal, args = [file_name])
+        b = st.button(" ", key=button_key, type='primary', on_click=open_chat_portal, args=[file_name])
 
 def random_select_char():
-    choose_n = np.random.choice([1, 2, 3], size=1, p=[0.85, 0.14, 0.01])[0]
+    # choose_n = np.random.choice([1, 2, 3], size=1, p=[0.85, 0.14, 0.01])[0]
+    choose_n = 1
     choose_char = random.sample(CHAR_NAMES, choose_n)
     choose_pos = random.sample(['left', 'middle', 'right'], choose_n)
     return choose_char, choose_pos
@@ -234,9 +231,7 @@ def navigation_buttons(direction):
         margin = 'min(1vw, 1.778vh)'
     elif direction == 'right':
         image_file = "images/right_button.png"
-        margin = 'calc(min(99vw, 176vh)  - min(10vh, 5.625vw))'
-
-    
+        margin = 'calc(min(99vw, 176vh) - min(10vh, 5.625vw))'
     
     # Define the HTML code to create a button with transparent background using a local image and glow effect on hover
     button_html = """
@@ -873,7 +868,7 @@ def task_page():
                         murderer = st.selectbox(title_add + 'Suspected Murderer:', options = CHAR_NAMES, index = None, placeholder = place_holder, disabled = disable)
                         submitted = st.form_submit_button("Submit", disabled=disable)
                         if submitted:
-                            if (victim == st.session_state['game_data']['final_answer']['victim']) and (murderer == st.session_state['game_data']['final_answer']['murderer']):
+                            if (victim == st.session_state['game_data']['final_answer']['victim']) and (murderer == st.session_state['game_data']['final_answer']['killer']):
                                 st.session_state['game_success'] = 1
                             else:
                                 st.session_state['game_success'] = 0
