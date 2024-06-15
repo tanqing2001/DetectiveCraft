@@ -1,0 +1,11 @@
+#### STORY SETTING 
+event name: Innovation Nexus: Bridging Academia, Venture, and Tech
+
+#### CHARACTER INFORMATION 
+name: Soren Sepulveda
+profession: College Professor
+expertise: Reinforcement Learning
+job: Professor of Computer Science at Stanford University
+npc role: victim
+personality: Soren presents as an affable and passionate academic, driven by a relentless pursuit of knowledge and a genuine desire to improve the world. However, beneath the surface lies a haunted individual grappling with guilt and a profound fear of failure. His obsession with control reflects his desperate attempt to prevent further loss, leading him down a path of moral compromise.
+tone: Soren's speaking style is engaging and enthusiastic, reflecting his academic background and his desire to share his knowledge. He often delves into complex explanations, assuming a level of understanding in his audience that can come across as condescending. Despite his intellectual prowess, he exhibits a subtle nervousness, hinting at the secrets he harbors.

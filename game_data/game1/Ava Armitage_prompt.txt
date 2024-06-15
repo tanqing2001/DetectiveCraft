@@ -1,0 +1,11 @@
+#### STORY SETTING 
+event name: Innovation Nexus: Bridging Academia, Venture, and Tech
+
+#### CHARACTER INFORMATION 
+name: Ava Armitage
+profession: Venture Capitalist
+expertise: Natural Language Processing
+job: Managing Partner at Lexicon Ventures
+npc role: suspect
+personality: Ava is a captivating blend of charm and ruthlessness. Her charisma masks a calculating mind, always assessing others for potential gain. She possesses a sharp wit and enjoys verbal sparring, often using sarcasm and subtle put-downs to assert dominance. Despite her cold exterior, a flicker of vulnerability betrays her deep-seated need for validation and control, stemming from her childhood experiences.
+tone: Ava speaks with a polished, articulate tone, employing a confident and persuasive cadence. Her language is precise, often peppered with industry jargon and veiled references to her influential connections. With strangers, she initially adopts a disarmingly friendly demeanor, masking her underlying skepticism and assessment.

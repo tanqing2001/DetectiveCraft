@@ -1,0 +1,11 @@
+#### STORY SETTING 
+event name: Innovation Nexus: Bridging Academia, Venture, and Tech
+
+#### CHARACTER INFORMATION 
+name: Kai Zhang
+profession: Software Engineer
+expertise: Computer Vision
+job: Lead Software Engineer at Omniscient Technologies
+npc role: killer
+personality: Kai is a quiet and contemplative individual, driven by a strong sense of justice and a desire to use his skills for good. He carries the weight of his past and the burden of his double life, leading to a cautious and reserved demeanor. Despite his introverted nature, he possesses a deep empathy for others and a fierce loyalty to those he trusts.
+tone: Kai speaks softly and deliberately, choosing his words carefully. He is a keen observer, often listening intently before offering his own perspective. With strangers, he maintains a polite but distant demeanor, revealing little about his personal life or his internal struggles.

@@ -1,0 +1,31 @@
+cookie:
+  expiry_days: 7
+  key: game_streamlit_cookie_key
+  name: app_cookie_name
+credentials:
+  usernames:
+    anni:
+      email: testing
+      name: Anni Huang
+      password: $2b$12$sqieRpHtJja/M6BrKHC/CudULVEE/0eU6qCrm.Nyifce89vT5wzIq
+      security_answer: $2b$12$vvrigW0iUunW9wXBKvo5POWO6isX8wbgIpcIfvvg9RdziC7q4TRha
+      security_question: What city were you born in?
+    test:
+      email: xx
+      failed_login_attempts: 0
+      logged_in: false
+      name: test user
+      password: $2b$12$UdLYZoBnks6UO/3Nj7PcBeDe7DD1q5NzfT9H207Ky6k.X3YNwEUEm
+      security_answer: $2b$12$mkV/UaYLZD9018KF4yANkezuwiYKmxrVY9XIdA8xNrXsh9Fyk.I52
+      security_question: What city were you born in?
+    testtt:
+      email: xx
+      failed_login_attempts: 0
+      logged_in: false
+      name: xx
+      password: $2b$12$aB1miy.h2xgx/ZFDnRIEmeXeHaCkMx5zyxzBlPjIpS4m08NPvHgC2
+      security_answer: xx
+      security_question: xx
+preauthorized:
+  emails:
+  - annih@uchicago.edu
