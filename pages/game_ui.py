@@ -9,12 +9,16 @@ from functions import character_resize, background_resize
 
 from model_adaptor import npc_chat, compare_task_answers
 
-GAME_ID = 'game1'
+# Set Game ID
+GAME_ID = 'game1' # This should eventually be a variable passed in when user clicks on a particular game
 if 'game_id' not in st.session_state:
     st.session_state['game_id'] = GAME_ID
-CHAR_NAMES = ['Ava Armitage', 'Soren Sepulveda', 'Kai Zhang']
-CHAR_IMAGES = ['images/ava_001_f.png', 'images/soren_001_f.png', 'images/kai_001_f.png']
-BACK_IMAGES = ['images/background1.png', 'images/background2.png', 'images/background3.png']
+
+# Load Game Images
+IMAGE_CONFIG = json.load(open('game_data/' + st.session_state['game_id'] + '/image_config.json'))
+CHAR_NAMES = list(IMAGE_CONFIG['characters'].keys())
+CHAR_IMAGES = ['game_data/' + st.session_state['game_id'] + '/images/' + i for i in IMAGE_CONFIG['characters'].values()]
+BACK_IMAGES = ['game_data/' + st.session_state['game_id'] + '/images/' + i for i in IMAGE_CONFIG['backgrounds']]
 
 
 def load_game_data():
@@ -137,7 +141,7 @@ def place_character(char_name, position):
     # Generate the clickable st button
     ## Button Image
     button_key = random.randint(100000,999999)
-    image_button = "images/chat_button_3.gif"
+    image_button = "game_images/chat_button_3.gif"
     direction = 'left'
     # Define the HTML code to create a button with transparent background using a local image and glow effect on hover
     button_html = """
@@ -227,10 +231,10 @@ def random_select_char():
 
 def navigation_buttons(direction):
     if direction == 'left':
-        image_file = "images/left_button.png"
+        image_file = "game_images/left_button.png"
         margin = 'min(1vw, 1.778vh)'
     elif direction == 'right':
-        image_file = "images/right_button.png"
+        image_file = "game_images/right_button.png"
         margin = 'calc(min(99vw, 176vh) - min(10vh, 5.625vw))'
     
     # Define the HTML code to create a button with transparent background using a local image and glow effect on hover
@@ -300,13 +304,13 @@ def navigation_buttons(direction):
 
 def function_buttons(button_name):
     if button_name == 'settings':
-        image_file = "images/setting_button.png"
+        image_file = "game_images/setting_button.png"
         left_margin = 'min(92vw, 163.5556vh)'
     elif button_name == 'chat_history':
-        image_file = "images/chat_history_button.png"
+        image_file = "game_images/chat_history_button.png"
         left_margin = 'calc(min(84vw, 149.3333vh))'
     elif button_name == 'task':
-        image_file = "images/task_button.png"
+        image_file = "game_images/task_button.png"
         left_margin = 'calc(min(76vw, 135.1111vh))'
     
 
@@ -361,7 +365,7 @@ def function_buttons(button_name):
 
 def timer(test, hours = 0, minutes = 30):
     # Clock icon
-    image_file = "images/timer_icon.png"
+    image_file = "game_images/timer_icon.png"
     # left_margin = 'min(1vw, 1111111111.7778vh)'
     left_margin = 'min(2vw, 3.555555556vh)'
     top_margin = 'min(10vh, 5.625vw)'
@@ -456,7 +460,7 @@ def timer(test, hours = 0, minutes = 30):
                 """, unsafe_allow_html=True)
 
 def darken_background():
-    image_file = 'images/dark_mask.png'
+    image_file = 'game_images/dark_mask.png'
     button_html = """
     <div style="position: fixed; top: 0px; left: 0px;">
         <div style="position: relative; display: inline-block;">
@@ -481,7 +485,7 @@ def close_button(top_margin, left_margin):
     top_margin = 'min(' + str(top_margin) + 'vh, ' + str(round(top_margin*9/16, 4)) + 'vw)'
     left_margin = 'min(' + str(left_margin) + 'vw, ' + str(round(left_margin*16/9, 4)) + 'vh)'
     
-    image_file = 'images/close_button.png'
+    image_file = 'game_images/close_button.png'
     button_html = """
     <div style="position: fixed; top: """ + top_margin +"""; left: """ + left_margin + """;">
         <div style="position: relative; display: inline-block;">
@@ -547,7 +551,7 @@ def settings_page():
             """,
     ):
         ### Header ###
-        image_file = 'images/setting_header.png'
+        image_file = 'game_images/setting_header.png'
         button_html = """
         <div style="position: fixed; top: min(36vh, 20.25vw); left: min(31vw, 55.1111vh);">
             <div style="position: relative; display: inline-block;">
@@ -568,7 +572,7 @@ def settings_page():
 
         
         ### button 1: Exit & Save ###
-        image_file = 'images/setting_exit_save.png'
+        image_file = 'game_images/setting_exit_save.png'
         button_html = """
         <div style="position: fixed; top: min(50vh, 28.125vw); left: min(32vw, 56.88889vh);">
             <div style="position: relative; display: inline-block;">
@@ -589,7 +593,7 @@ def settings_page():
         st.markdown(css_code, unsafe_allow_html=True)
 
         ### button 2: Exit without save ###
-        image_file = 'images/setting_exit_no_save.png'
+        image_file = 'game_images/setting_exit_no_save.png'
         button_html = """
         <div style="position: fixed; top: min(60vh, 33.75vw); left: min(32vw, 56.88889vh);">
             <div style="position: relative; display: inline-block;">
@@ -814,7 +818,7 @@ def task_page():
         # Final Answer Tab
         with tabs[tab_names.index('Final Answer')]:
             ### Header ###
-            image_file = 'images/task_final_answer.png'
+            image_file = 'game_images/task_final_answer.png'
             button_html = """
             <div style="position: fixed; top: min(36vh, 20.25vw); left: min(29vw, 51.5556vh);">
                 <div style="position: relative; display: inline-block;">

@@ -1,0 +1,8 @@
+{
+    "characters":{
+        "Ava Armitage": "ava_001_f.png",
+        "Kai Zhang": "kai_001_f.png",
+        "Soren Sepulveda": "soren_001_f.png"
+    },
+    "backgrounds": ["background1.png", "background2.png", "background3.png"]
+}
