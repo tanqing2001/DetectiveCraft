@@ -1,4 +1,4 @@
-import json
+import json, time
 import base64
 import random
 import asyncio
@@ -657,7 +657,8 @@ def task_page():
             }
             """,
     ):
-                
+        
+        # Create tab buttons        
         with stylable_container(
         key="task_tabs",
         css_styles="""
@@ -721,45 +722,97 @@ def task_page():
                 tab_names = ['Final Answer', 'Clues', 'Overview']
 
             tabs = st.tabs(tab_names)
+        
         # Introduction Letter
         with tabs[tab_names.index('Overview')]:
-            with stylable_container(key = 'overview_tab', css_styles="""
+            with stylable_container(key="overview_tab_container", # set background color darker to show chat
+                css_styles="""
+                    {
+                        border: min(0.65vh, 0.3656vw) solid #B87A36;
+                        border-radius: 0.5rem;
+                        background: #DDD9D5;
+                        position: fixed;
+                        top: min(32vh, 18vw);
+                        left: min(22.5vw, 40vh);
+                        height: min(59vh, 33.1875vw);
+                        width: min(55vw, 97.7778vh);
+                    }
+                    """,
+            ):
+                # chat area container: styling
+                with stylable_container(key = 'overview_tab', css_styles="""
                     {
                         position: fixed;
                         top: min(35.5vh, 19.96875vw);
                         left: min(24.5vw, 43.5556vh);
                         height: min(52vh, 29.25vw);
                         width: min(51vw, 90.6667vh);
-                        overflow-y: auto;
-                        overflow-x: hidden;
                         display: flex;
                     }
                     """):
-                cols = st.columns((0.001, 15, 0.1))
-                with cols[1]:
-                    # original_title = '<p style="font-family:Courier; color:Blue; font-size: 20px;">Original imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal image</p>'
-                    # st.markdown(original_title, unsafe_allow_html=True)
-                    overview = """**Dear Detective :blue[[Player Name]]:**\n\n
-&nbsp; &nbsp; &nbsp; We have been informed by an anonymous tipster of :orange[an imminent threat of murder] within close proximity to your location. Your assistance in this matter is **urgently** required! Please read the below :orange[case details] **CAREFULLY**:\n\n
-                """
-                    st.markdown(overview)
-                    st.markdown("""**--Case Overview--**  
-                    """ + '*' + st.session_state['game_data']['overview'] + """*  
-                    **--END--**""")
+                    # chat area double container: scrolling
+                    with st.container(height=1000, border=False):
+                        police_msgs = ['Hi Detective :blue[[Player Name]]',
+                                      'Thanks for your help in stopping this potential murder.',
+                                      f'Below is the location of investigation:  \n📍**{st.session_state['game_data']['story_setting']['event_name']}**  \n{st.session_state['game_data']['story_setting']['event_description']}',
+                                      'The individuals you will need to investigate are:  \n-' + '  \n-'.join(CHAR_NAMES),
+                                      'Remember, you only have **:red[12 hours]** before it is too late.',
+                                      'Best of Luck!']
+                        if st.session_state['game_stages'] == 0:
+                            time.sleep(2)
+                            for message in police_msgs:
+                                with st.chat_message('user', avatar='👮'):
+                                    # st.markdown(message)
+                                    message_placeholder = st.empty()
+                                    full_response = ""
+                                    for chunk in message.split(' '):
+                                        full_response += chunk + " "
+                                        time.sleep(0.1)
+                                        # Add a blinking cursor to simulate typing
+                                        message_placeholder.markdown(full_response + "�?")
+                                    message_placeholder.markdown(full_response)
+                                time.sleep(1)
+                        else:
+                            for message in police_msgs:
+                                with st.chat_message('user', avatar='👮'):
+                                    st.markdown(message)
+#             with stylable_container(key = 'overview_tab', css_styles="""
+#                     {
+#                         position: fixed;
+#                         top: min(35.5vh, 19.96875vw);
+#                         left: min(24.5vw, 43.5556vh);
+#                         height: min(52vh, 29.25vw);
+#                         width: min(51vw, 90.6667vh);
+#                         overflow-y: auto;
+#                         overflow-x: hidden;
+#                         display: flex;
+#                     }
+#                     """):
+#                 cols = st.columns((0.001, 15, 0.1))
+#                 with cols[1]:
+#                     # original_title = '<p style="font-family:Courier; color:Blue; font-size: 20px;">Original imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal imageOriginal image</p>'
+#                     # st.markdown(original_title, unsafe_allow_html=True)
+#                     overview = """**Dear Detective :blue[[Player Name]]:**\n\n
+# &nbsp; &nbsp; &nbsp; We have been informed by an anonymous tipster of :orange[an imminent threat of murder] within close proximity to your location. Your assistance in this matter is **urgently** required! Please read the below :orange[case details] **CAREFULLY**:\n\n
+#                 """
+#                     st.markdown(overview)
+#                     st.markdown("""**--Case Overview--**  
+#                     """ + '*' + st.session_state['game_data']['overview'] + """*  
+#                     **--END--**""")
     
-                    instructions = """  
-    Now, with that information, your :orange[one and only goal] is to prevent the impending tragedy from happening by **identifying** both the intended **victim** and the **perpetrator** among three individuals. A few pieces of advice before you go:  
-    - Some :orange[mysterious clues] were discreetly left by an anonymous informant  
-    - :orange[Engage in dialogue] with the identified subjects with tact and discernment. They should have the information to help you :orange[solve the clues]  
-    - Once solved, clues should :orange[reveal critical information] about the case. Use it to gain trust with the subjects and :orange[gather their identities & motives.]\n\n
-    **Remember**, you only have :warning:**:red[12 hours]**:exclamation: before it is too late. The timer has already started! Best of luck in your endeavor.\n\n
-    **Yours truly,**  
-    **Officer X**"""
-                    st.markdown(instructions)
+#                     instructions = """  
+#     Now, with that information, your :orange[one and only goal] is to prevent the impending tragedy from happening by **identifying** both the intended **victim** and the **perpetrator** among three individuals. A few pieces of advice before you go:  
+#     - Some :orange[mysterious clues] were discreetly left by an anonymous informant  
+#     - :orange[Engage in dialogue] with the identified subjects with tact and discernment. They should have the information to help you :orange[solve the clues]  
+#     - Once solved, clues should :orange[reveal critical information] about the case. Use it to gain trust with the subjects and :orange[gather their identities & motives.]\n\n
+#     **Remember**, you only have :warning:**:red[12 hours]**:exclamation: before it is too late. The timer has already started! Best of luck in your endeavor.\n\n
+#     **Yours truly,**  
+#     **Officer X**"""
+#                     st.markdown(instructions)
         
         # Tasks
         with tabs[tab_names.index('Clues')]:            
-            with stylable_container(key = 'overview_tab', css_styles="""
+            with stylable_container(key = 'clues_tab', css_styles="""
                     {
                         position: fixed;
                         top: min(35.5vh, 19.96875vw);
