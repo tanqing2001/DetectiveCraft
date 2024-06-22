@@ -3,7 +3,7 @@ import authentication as auth
 
 def main():
     if 'authentication_status' not in st.session_state:
-        st.switch_page('navigator.py')
+        st.switch_page('ui_navigator.py')
     
     def logout_user():
         st.session_state['authentication_status'] = False

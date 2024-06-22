@@ -753,8 +753,8 @@ def task_page():
                     # chat area double container: scrolling
                     with st.container(height=1000, border=False):
                         police_msgs = ['Hi Detective :blue[[Player Name]]',
-                                      'Thanks for your help in stopping this potential murder.',
-                                      f'Below is the location of investigation:  \n📍**{st.session_state['game_data']['story_setting']['event_name']}**  \n{st.session_state['game_data']['story_setting']['event_description']}',
+                                      'Thanks for taking on the investigation of this **potential murder case**.  \nYour help is very much needed in identifying the suspected **victim** and **murderer**.',
+                                      f'Below is the location of your search:  \n📍**{st.session_state['game_data']['story_setting']['event_name']}**  \n{st.session_state['game_data']['story_setting']['event_description']}',
                                       'The individuals you will need to investigate are:  \n-' + '  \n-'.join(CHAR_NAMES),
                                       'Remember, you only have **:red[12 hours]** before it is too late.',
                                       'Best of Luck!']
@@ -929,7 +929,6 @@ def task_page():
                                 st.session_state['game_success'] = 1
                             else:
                                 st.session_state['game_success'] = 0
-                    ending_page()
         if st.session_state['task_portal']:
             close_button(28, 74.5)
 
@@ -970,7 +969,7 @@ def task_progress_bar():
         unsafe_allow_html=True)
         placeholder.markdown(
             """
-            <div style="position: fixed; top: min(11.5vh, 6.46875vw); left: min(54vw, 666666666.66666667vh);">
+            <div style="position: fixed; padding-top: min(2vh, 1.125vw); left: min(54vw, 96vh);">
                 <div style="position: relative; display: inline-block;">
                 <p class="prog_text">
                     """ + cur_prog_stat + """
@@ -980,14 +979,71 @@ def task_progress_bar():
             """, unsafe_allow_html=True)
 
 
-def ending_page():
-    if st.session_state['game_success'] == 1:
-        st.success('You have succeeded!', icon="🎉")
-        st.balloons()
-    elif st.session_state['game_success'] == 0:
-        st.error('You failed to stop the murder...', icon="😭")
-        st.snow()
+def char_trust_bar(trust_level):
+    trust_level_str = str(trust_level) + '%'
 
+    top_margin = 'min(91vh, 51.1875vw)'
+    left_margin = 'min(19vw, 33.7778vh)'
+
+    with stylable_container(key = 'trust_bar_background', css_styles="""
+        {
+            position: fixed;
+            top: """ + top_margin + """;
+            left: """ + left_margin + """;
+            transform: translateX(-50%);
+            height: min(4vh, 2.25vw);
+            width: min(20vw, 35.5556vh);
+            display: flex;
+            background: linear-gradient(to right, #2394b9, #e71847 """ + trust_level_str + """, #F2F2F2 """ + trust_level_str + """);
+            border-radius: 5rem;
+            color: rgba(0, 0, 0, 0);
+            box-shadow: inset 0px -10px 10px -5px #2f2f2f,
+                        0 0 10px 1px #bfbfbf;
+        }
+        """):
+        st.empty()
+    
+    with stylable_container(key = 'trust_bar_foreground', css_styles="""
+        {
+            position: fixed;
+            top: """ + top_margin + """;
+            left: """ + left_margin + """;
+            transform: translateX(-50%);
+            height: min(4vh, 2.25vw);
+            width: min(20vw, 35.5556vh);
+            display: flex;
+            background: linear-gradient(to right, transparent, transparent """ + trust_level_str + """, #F2F2F2 """ + trust_level_str + """);
+            border-radius: 5rem;
+            color: rgba(0, 0, 0, 0);
+            box-shadow: inset 0px -10px 10px -5px #2f2f2f;
+        }
+        """):
+        placeholder = st.empty() # ff2474
+        st.markdown(
+        """
+        <style>
+        .trust_text {
+            font-size: min(2vh, 1.125vw) !important;
+            font-weight: 600 !important;
+            color: #B87A36 !important;
+            text-shadow: 0 0 15px #ffffff, 0 0 15px #ffffff, 
+                         0 0 5px #ffffff, 0 0 5px #ffffff,
+                         0 0 5px #ffffff, 0 0 5px #ffffff,
+                         0 0 5px #ffffff, 0 0 5px #ffffff;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True)
+        placeholder.markdown(
+            """
+            <div style="position: fixed; left: """ + left_margin + """; width: min(20vw, 35.5556vh); transform: translateX(-65%); padding-top: min(2vh, 1.125vw);">
+                <div style="position: relative; display: inline-block;">
+                <p class="trust_text">
+                    Trust Level: """ + trust_level_str + """
+                    </p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
 def chat_history_page():
     darken_background()
@@ -1181,7 +1237,10 @@ def chat_page():
         tag_left_margin = 'min(19vw, 33.77778vh)'
         tag_top_margin = 'min(22vh, 12.375vw)'
         name_tag(CHAR_NAMES[st.session_state['chat_char']], tag_top_margin, tag_left_margin)
-    
+
+        # Trust Level Bar
+        char_trust_bar(80)
+        
         # Chatting section
         with stylable_container(
             key="container_with_border_chat",
@@ -1208,6 +1267,113 @@ def chat_page():
                 st.rerun()
             if st.session_state['chat_portal']:
                 close_button(11, 90)
+
+
+def ending_page():
+    if st.session_state['game_success'] != -1:
+        # Close open windows & darken background
+        portal_states = ['task_portal', 'settings_portal', 'chat_history_portal', 'chat_portal']
+        portal_open = False
+        for ps in portal_states:
+            if st.session_state[ps]:
+                portal_open = True
+                st.session_state[ps] = False
+        if portal_open:
+            st.rerun()
+        darken_background()
+
+    with stylable_container(
+        key="ending_page_container",
+        css_styles="""
+            {
+                border: min(0.65vh, 0.3656vw) solid #B87A36;
+                border-radius: 0.5rem;
+                background: #E8E8E8;
+                position: fixed;
+                top: min(20vh, 11.25vw);
+                left: min(22.5vw, 40vh);
+                height: min(71vh, 39.9375vw);
+                width: min(55vw, 97.7778vh);
+            }
+            """,
+    ):
+        if st.session_state['game_success'] == 1:
+            image_file = 'game_images/success_star.png'
+            st.balloons()
+        elif st.session_state['game_success'] == 0:
+            image_file = 'game_images/fail_cloud.png'
+            st.snow()
+
+        ### Header ###
+        button_html = """
+        <div style="position: fixed; top: min(22vh, 12.375vw); left: min(31vw, 55.1111vh);">
+            <div style="position: relative; display: inline-block;">
+                <img src="data:image/png;base64,{}" alt="Setting Header" class="ending-header" id="ending-header">
+            </div>
+        </div>
+        """
+        css_code = """
+        <style>
+        .ending-header {
+            width: min(38vw, 67.5556vh);
+        }
+        </style>
+        """
+        image_base64 = get_base64_of_bin_file(image_file)
+        st.markdown(button_html.format(image_base64), unsafe_allow_html=True)
+        st.markdown(css_code, unsafe_allow_html=True)
+
+        # Text container
+        with stylable_container(
+        key="ending_text_container",
+        css_styles="""
+            {
+                position: fixed;
+                top: min(38vh, 21.375vw);
+                left: min(25vw, 44.44444vh);
+                height: min(10.5vh, 33.1875vw);
+                width: min(50vw, 88.88889vh);
+                text-align: center;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+            """,
+        ):
+            cols = st.columns((1, 100, 1))
+            cols[1].markdown(f'In the end, **:red[{st.session_state["game_data"]["final_answer"]["killer"]}]** had an intention to kill **:blue[{st.session_state["game_data"]["final_answer"]["victim"]}]** because [Generate some summary for reason of murder xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.....].', unsafe_allow_html=True)
+
+        # Feedback Survey Container
+        with stylable_container(
+        key="feedback_form_container",
+        css_styles="""
+            {
+                position: fixed;
+                top: min(52vh, 29.25vw);
+                left: min(22.5vw, 40vh);
+                height: min(59vh, 33.1875vw);
+                width: min(55vw, 97.7778vh);
+                text-align: center;
+            }
+            """,
+        ):
+            cols = st.columns((1, 10, 1))
+            with cols[1].form('feed-back-form'):
+                st.write("**Feedback Survey**")
+                col_s = st.columns((2, 8))
+                with col_s[0]:
+                    st.write(' \n')
+                    st.write('**Engagement**')
+                    st.markdown("<p style='padding-top:8px'></p>", unsafe_allow_html=True)
+                    st.write('**Innovativeness**')
+                    st.markdown("<p style='padding-top:10px'></p>", unsafe_allow_html=True)
+                    st.write('**Cohesiveness**')
+                with col_s[1]:
+                    st.slider("Engagement", 0, 5, 0, 1, label_visibility='collapsed')
+                    st.slider("Innovativeness", 0, 5, 0, 1, label_visibility='collapsed')
+                    st.slider("Cohesiveness", 0, 5, 0, 1, label_visibility='collapsed')
+                received = st.form_submit_button('Submit & Exit Game')
+            if received:
+                st.switch_page('pages/user_dashboard.py')
 
 def main():
     st.markdown(
@@ -1243,6 +1409,8 @@ def main():
     # Initialize chat states
     if 'chat_char' not in st.session_state:
         st.session_state['chat_char'] = 0
+    if 'char_trust' not in st.session_state:
+        st.session_state['char_trust'] = {i: 100 for i in CHAR_NAMES}
     if 'chat_history_log' not in st.session_state:
         st.session_state['chat_history_log'] = {i: [] for i in CHAR_NAMES}
     if 'npc_bots' not in st.session_state:
@@ -1295,10 +1463,13 @@ def main():
         chat_history_page()
     if st.session_state['chat_portal']:
         chat_page()
-    
-    # Set timer
-    test = st.empty()
-    timer(test)
+
+    if st.session_state['game_success'] != -1:
+        ending_page()
+    else:
+        # Set timer
+        test = st.empty()
+        timer(test)
 
 
 if __name__ == '__main__':
