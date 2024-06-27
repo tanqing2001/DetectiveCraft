@@ -46,7 +46,7 @@ def get_base64_of_bin_file(bin_file):
      return base64.b64encode(data).decode()
 
 #
-def set_background(png_file):
+def set_background(png_file):    
      bin_str = get_base64_of_bin_file(png_file)
      page_bg_img = '''
      <style>
@@ -57,7 +57,7 @@ def set_background(png_file):
      }
      </style>
      ''' % bin_str
-
+    
      st.markdown(page_bg_img, unsafe_allow_html=True)
      return
 
@@ -273,9 +273,8 @@ def navigation_buttons(direction):
         st.session_state['chosen_char'] = chosen_ones[0]
         st.session_state['chosen_pos'] = chosen_ones[1]
     
-    button_key = random.randint(1000,9999)
     with stylable_container(
-        'butt' + str(button_key),
+        'butt' + direction,
         css_styles="""
         button {
         background-color: rgb(204, 49, 49, 0);
@@ -298,7 +297,7 @@ def navigation_buttons(direction):
         border-radius: 20%;
         }""",
     ):
-        b = st.button(" ", key=button_key, on_click=set_screen_state, args=[direction])
+        b = st.button(" ", key=direction, on_click=set_screen_state, args=[direction])
 
 
 
@@ -363,7 +362,7 @@ def function_buttons(button_name):
 
 
 
-def timer(test, hours = 0, minutes = 30):
+def timer(test, hours = 0, minutes = 0.1):
     # Clock icon
     image_file = "game_images/timer_icon.png"
     # left_margin = 'min(1vw, 1111111111.7778vh)'
@@ -614,9 +613,8 @@ def settings_page():
         st.markdown(css_code, unsafe_allow_html=True)
 
         # Generate the clickable st button              
-        button_key = random.randint(100000,999999)
         with stylable_container(
-            'butt' + str(button_key),
+            'butt_exit_no_save',
             css_styles="""
             button {
             background-color: rgb(204, 49, 49, 0);
@@ -769,7 +767,7 @@ def task_page():
                                         full_response += chunk + " "
                                         time.sleep(0.1)
                                         # Add a blinking cursor to simulate typing
-                                        message_placeholder.markdown(full_response + "â–?")
+                                        message_placeholder.markdown(full_response + "â–Œ")
                                     message_placeholder.markdown(full_response)
                                 time.sleep(1)
                         else:

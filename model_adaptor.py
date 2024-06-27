@@ -4,8 +4,8 @@ import google.generativeai as genai
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-genai.configure(api_key="AIzaSyCdz3KIyqKg_oxO239B4bf9A2BauXeR6Ig")
-os.environ['GOOGLE_API_KEY'] = 'AIzaSyCdz3KIyqKg_oxO239B4bf9A2BauXeR6Ig'
+genai.configure(api_key="")
+os.environ['GOOGLE_API_KEY'] = ''
 
 safety_settings = [
   {
