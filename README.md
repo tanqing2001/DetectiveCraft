@@ -7,7 +7,7 @@ This is app with fully AI Generated Games built using LLM and Streamlit
 To Run the app:
 
 ```bash
-streamlit run navigator.py --client.showSidebarNavigation=False
+streamlit run ui_navigator.py --client.showSidebarNavigation=False
 ```
 
 ## Usage
