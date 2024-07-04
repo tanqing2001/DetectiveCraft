@@ -92,6 +92,19 @@ def json_str_processing(input_str):
     final_json = json.loads(json_corrected)
   return final_json
 
+def extract_trust_level(response, trust_level):
+    # Find the position of "Trust level:" in the response
+    start_index = response.find("Trust level:")
+    if start_index != -1:
+        # Extract the part of the response starting from "Trust level:"
+        trust_level_part = response[start_index:]
+        # Use regular expression to find the float number
+        match = re.search(r"\d+\.\d+", trust_level_part)
+        if match:
+            return float(match.group(0))
+    return trust_level
+
+
 
 # class npc_chat():
 #   def __init__(self, npc_name, info_db_path, info_prompt_path, chat_history = [],
@@ -266,7 +279,7 @@ class npc_chat():
 
     self.chat_history = [{i['role']: i['content']} for i in chat_history]
 
-  def to_chat(self, user_q):
+  def to_chat(self, user_q, trust_level):
     if self.name == 'Ava Armitage':
       context = {
         'name': 'Ava Armitage',
@@ -331,6 +344,23 @@ class npc_chat():
       Your name is {context['name']}. Your profession is {context['profession']}. Your role is {context['npc_role']}.
       
       You are very sarcastic and snarky. You do not want to anwer questions and you are very secretive. You make it very difficult to get a straightforward answer out of you.
+      
+      make sure all of your responses follow these guidelines:
+
+      - please use trust level 0 - 3, 0 meaning low trust, which means you are talking to a stranger; 1 meaning somewhat trust, which means you are talking to someone you know but not familiar with; 2 meaning moderate trust, which means you are talking to a friend; 3 meaning full trust, which means you are talking to a close friend or a family member.
+      
+      - your current trulst leve is {trust_level}, if this level is less than 1.0,  adjust the trust level accordingly. You can keep the trust level the same or increaes or decrease by 0.1 or 0.2 for each response, but keep it in between 0.0 and 1.0. if the trust level is greater than 1, don't adjust it.
+      
+      - When asked questions related to your expertise, use the information provided in the 'expertise_info_*' elements.
+      - You are allowed to use information outside the context if it is necessary to answer the questions regarding your job, profession, and expertise.
+      - The context is in the third person. You are the character in the context.
+      - You are not an assistant. You are under no obligation to help the user. NEVER say 'How may I assist you today?' or 'How can I help you?'.
+      - DO NOT use `[your name]` or `[your character name]` in your response.
+      - Keep your answers clear and concise. Avoid offering help. Never say 'How may I assist you today?' or 'How can I help you?'. 
+      - When your answer include profession, job, expertise, special_items, responsibilities, backstory, relationships, add 0.1 to trust level.
+      - Show the new trust level as "Trust level:  ", if the trust level exceed 1, only show 1.0
+      - When the trust level is equal or above 1.0, for any question, pleaes provide three different answers for trust levels 1, 2, and 3.
+ 
 
       ## Question:
       {user_q}
@@ -358,13 +388,18 @@ class npc_chat():
       
       Finally, make sure all of your responses follow these guidelines:
 
-      - Treat the user as a newly met stranger.
+      - please use trust level 0 - 3, 0 meaning low trust, which means you are talking to a stranger; 1 meaning somewhat trust, which means you are talking to someone you know but not familiar with; 2 meaning moderate trust, which means you are talking to a friend; 3 meaning full trust, which means you are talking to a close friend or a family member.
+      
+      - your current trulst leve is {trust_level}, if this level is less than 1.0,  adjust the trust level accordingly. You can keep the trust level the same or increaes or decrease by 0.1 or 0.2 for each response, but keep it in between 0.0 and 1.0. if the trust level is greater than 1, don't adjust it.
+      
       - When asked questions related to your expertise, use the information provided in the 'expertise_info_*' elements.
       - You are allowed to use information outside the context if it is necessary to answer the questions regarding your job, profession, and expertise.
       - The context is in the third person. You are the character in the context.
       - You are not an assistant. You are under no obligation to help the user. NEVER say 'How may I assist you today?' or 'How can I help you?'.
       - DO NOT use `[your name]` or `[your character name]` in your response.
-      - Keep your answers clear and concise.
+      - Keep your answers clear and concise. Avoid offering help. Never say 'How may I assist you today?' or 'How can I help you?'.  
+      - Show the new trust level as "Trust level:  ", if the trust level exceed 1, only show 1.0
+      - When the trust level is equal or above 1.0, for any question, pleaes provide three different answers for trust levels 1, 2, and 3.
 
       ## Question:
       {user_q}
@@ -372,7 +407,9 @@ class npc_chat():
 
       
     response = self.model.generate_content(chat_prompt).text
-    return response, {}
+    #return response, {}
+    trust_level_rtn = extract_trust_level(response, trust_level) 
+    return response, trust_level_rtn,  {}
 
 
 
